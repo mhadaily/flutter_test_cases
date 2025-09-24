@@ -1,6 +1,4 @@
 /*
-You're right. Let's refine that with a clearer explanation, a practical use case, and heavily commented code.
-
 What is LayerLink? (A Simple Analogy)
 Imagine you have a moving car (your target widget, like a button) and you want to place a sticky note (your follower widget, like a dropdown menu) right above it.
 
