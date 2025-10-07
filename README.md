@@ -84,7 +84,7 @@ flutter --version  # Flutter 3.8.1 or higher
 ### Installation
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/flutter_test_cases.git
+git clone https://github.com/dcm-dev/flutter_test_cases.git
 cd flutter_test_cases
 
 # Install dependencies
