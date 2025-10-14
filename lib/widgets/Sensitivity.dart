@@ -20,7 +20,7 @@ Important Note: This widget currently only works on Android 15 (API 35) and newe
 
 */
 
-import 'package.flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; // Required for ContentSensitivity
 
 void main() {
@@ -43,7 +43,8 @@ class SensitiveContentExample extends StatefulWidget {
   const SensitiveContentExample({super.key});
 
   @override
-  State<SensitiveContentExample> createState() => _SensitiveContentExampleState();
+  State<SensitiveContentExample> createState() =>
+      _SensitiveContentExampleState();
 }
 
 class _SensitiveContentExampleState extends State<SensitiveContentExample> {

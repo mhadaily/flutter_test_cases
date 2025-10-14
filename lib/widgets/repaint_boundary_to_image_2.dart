@@ -1,4 +1,5 @@
 import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
@@ -40,7 +41,8 @@ class _DrawingPadScreenState extends State<DrawingPadScreen> {
     try {
       // 2. Find the RenderObject from the GlobalKey.
       final RenderRepaintBoundary boundary =
-          _repaintKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
+          _repaintKey.currentContext!.findRenderObject()
+              as RenderRepaintBoundary;
 
       // 3. Convert the boundary to an image.
       // pixelRatio can be adjusted for higher or lower quality images.
@@ -69,7 +71,7 @@ class _DrawingPadScreenState extends State<DrawingPadScreen> {
               _capturedImage = null; // Also clear the captured image
             }),
             tooltip: 'Clear Drawing',
-          )
+          ),
         ],
       ),
       body: Padding(
@@ -109,7 +111,9 @@ class _DrawingPadScreenState extends State<DrawingPadScreen> {
                       child: CustomPaint(
                         // Pass a copy of the _points list to ensure shouldRepaint correctly identifies changes
                         // as the list instance itself is modified, not replaced.
-                        painter: DrawingPainter(points: List<Offset?>.of(_points)),
+                        painter: DrawingPainter(
+                          points: List<Offset?>.of(_points),
+                        ),
                       ),
                     ),
                   ),
@@ -137,7 +141,9 @@ class _DrawingPadScreenState extends State<DrawingPadScreen> {
                 ),
                 child: _capturedImage != null
                     ? RawImage(image: _capturedImage)
-                    : const Center(child: Text('Press capture to see the image here')),
+                    : const Center(
+                        child: Text('Press capture to see the image here'),
+                      ),
               ),
             ),
           ],
