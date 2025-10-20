@@ -1,0 +1,193 @@
+# Flutter Test Cases Repository
+
+> A comprehensive collection of complex Flutter testing scenarios demonstrating solutions to challenging testing problems.
+
+## Overview
+
+This repository contains working examples of Flutter test patterns that address common but difficult testing scenarios. Each test file is self-contained and demonstrates a complete testing approach with proper setup, execution, and verification.
+
+## Repository Structure
+
+- `/test/` - All test files demonstrating various testing patterns
+- `/lib/` - Sample implementations being tested
+- `/test/*.mocks.dart` - Generated mock files from Mockito
+
+## Testing Patterns
+
+### Time & Async Operations
+- Files: edge_timer_test.dart, microtask_timer_test.dart, infinite_timer_test.dart, time_test.dart, runasync_test.dart
+- Use FakeAsync to control time flow without waiting
+- Handle timezone changes and DST transitions
+- Test timer callbacks and periodic operations
+- Manage microtasks and event loops
+
+### Dependency Injection & Mocking
+- Files: album_test.dart, connectivity_widget_test.dart
+- Mock HTTP clients using @GenerateMocks([http.Client])
+- Create test doubles for platform plugins
+- Inject services through constructor parameters
+- Generate mocks: dart run build_runner build --delete-conflicting-outputs
+
+### Responsive UI Testing
+- Files: responsive_test.dart, responsive2_test.dart
+- Simulate screen sizes with MediaQuery
+- Test responsive breakpoints
+- Verify layout changes across devices
+- Handle context-dependent logic
+
+### Error Handling
+- Files: error_test.dart, binding_test.dart
+- Test exception scenarios
+- Verify error UI states
+- Handle initialization failures
+- Create mocks that throw exceptions
+
+### Navigation Testing
+- Files: navigation_test.dart, navigator_observer_test.dart
+- Use NavigatorObserver for tracking
+- Verify route transitions
+- Test deep linking
+- Handle navigation state
+
+### Custom Rendering
+- Files: custompainter_test.dart, fade_test.dart
+- Use canvas_test package for verification
+- Test animations and transitions
+- Verify custom painter output
+
+### Theme Testing
+- Files: theme_test.dart
+- Verify theme data extraction
+- Test dark/light mode switching
+- Test color and style inheritance
+
+## Key Commands
+
+```bash
+# Install dependencies
+flutter pub get
+
+# Generate mock files (required for tests)
+dart run build_runner build --delete-conflicting-outputs
+
+# Run all tests
+flutter test
+
+# Run specific test
+flutter test test/album_test.dart
+
+# Run with coverage
+flutter test --coverage
+```
+
+## Testing Utilities
+
+- testWidgets() - Widget testing with WidgetTester
+- test() - Unit testing non-widget code
+- group() - Organize related tests
+- setUp()/tearDown() - Test initialization/cleanup
+- when().thenAnswer() - Stub mock behavior
+- verify() - Verify mock interactions
+- tester.pump() - Trigger widget rebuilds
+- tester.pumpWidget() - Render widgets in tests
+
+## Common Patterns
+
+1. Always generate mocks before running tests that use Mockito
+2. Use dependency injection to make widgets testable
+3. Control async operations with FakeAsync for deterministic tests
+4. Test both success and failure scenarios
+5. Use pumpWidget() to render widgets and pump() to trigger rebuilds
+6. Inject mock services through widget constructors
+7. Use NavigatorObserver for navigation verification
+8. Wrap widgets with MediaQuery for responsive testing
+
+## Dependencies
+
+- flutter_test - Core testing framework
+- mockito ^5.5.0 - Mock generation and stubbing
+- fake_async ^1.3.3 - Time control in tests
+- canvas_test ^0.2.0 - Custom painter testing
+- timezone ^0.10.1 - Timezone-specific testing
+- clock ^1.1.2 - Time abstraction
+- connectivity_plus ^6.1.4 - Network connectivity (mocked in tests)
+- http ^1.4.0 - HTTP client (mocked in tests)
+
+## Testing Best Practices
+
+- Each test file focuses on one specific challenge
+- Tests include arrange-act-assert pattern
+- Mock external dependencies
+- Control time with FakeAsync
+- Test error conditions explicitly
+- Use descriptive test names
+- Generate mocks with build_runner
+- Inject dependencies for testability
+
+## Example Test Structure
+
+```dart
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
+
+@GenerateMocks([ServiceClass])
+void main() {
+  group('Feature', () {
+    test('should handle success case', () async {
+      // Arrange
+      final mock = MockServiceClass();
+      when(mock.method()).thenAnswer((_) async => expectedValue);
+      
+      // Act
+      final result = await functionUnderTest(mock);
+      
+      // Assert
+      expect(result, expectedValue);
+      verify(mock.method()).called(1);
+    });
+  });
+}
+```
+
+## Widget Test Example
+
+```dart
+testWidgets('should display correct UI', (tester) async {
+  // Arrange
+  final mockService = MockService();
+  when(mockService.getData()).thenAnswer((_) async => testData);
+  
+  // Act
+  await tester.pumpWidget(
+    MaterialApp(
+      home: WidgetUnderTest(service: mockService),
+    ),
+  );
+  await tester.pump(); // Trigger rebuild
+  
+  // Assert
+  expect(find.text('Expected Text'), findsOneWidget);
+});
+```
+
+## FakeAsync Example
+
+```dart
+test('should handle timer', () {
+  fakeAsync((async) {
+    // Arrange
+    var callbackExecuted = false;
+    
+    // Act
+    Timer(Duration(seconds: 5), () {
+      callbackExecuted = true;
+    });
+    
+    async.elapse(Duration(seconds: 5));
+    
+    // Assert
+    expect(callbackExecuted, isTrue);
+  });
+});
+```
