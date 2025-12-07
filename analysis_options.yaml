@@ -7,7 +7,15 @@
 
 # The following line activates a set of recommended lints for Flutter apps,
 # packages, and plugins designed to encourage good coding practices.
-include: package:flutter_lints/flutter.yaml
+#include: package:flutter_lints/flutter.yaml
+
+# Custom analyzer plugins
+plugins:
+  custom_lint_plugin:
+    path: packages/custom_lint_plugin
+    diagnostics:
+      # Enable lint rules explicitly (warning rules are enabled by default)
+      todo_comment: true
 
 linter:
   # The lint rules applied to this project can be customized in the
@@ -23,6 +31,5 @@ linter:
   rules:
     # avoid_print: false  # Uncomment to disable the `avoid_print` rule
     # prefer_single_quotes: true  # Uncomment to enable the `prefer_single_quotes` rule
-
 # Additional information about this file can be found at
 # https://dart.dev/guides/language/analysis-options
