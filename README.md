@@ -8,7 +8,7 @@ Complex test cases for Flutter covering challenging scenarios, which I have cove
 
 ## 🔍 Custom Lint Plugin Based on Dart 3.10+ and New Analyzer API
 
-In addition to comprehensive test cases, this repository includes a **custom analyzer plugin** demonstrating the new Dart 3.10+ analyzer plugin API. The plugin implements multiple lint rules for Flutter and Dart projects, covered in [this article about creating custom lint rules](https://dcm.dev/blog) (placeholder for article).
+In addition to comprehensive test cases, this repository includes a **custom analyzer plugin** demonstrating the new Dart 3.10+ analyzer plugin API. The plugin implements multiple lint rules for Flutter and Dart projects, covered in [this article about creating custom lint rules](https://dcm.dev/blog/custom-lint-plugin/) (placeholder for article).
 
 ### Features
 
@@ -19,6 +19,15 @@ In addition to comprehensive test cases, this repository includes a **custom ana
 - **Quick Fixes**: Automatic code fixes for applicable rules
 - **Example Files**: Practical demonstrations of each rule in action
 - **Best Practices**: Follows Dart package structure and modern plugin architecture
+
+### Testing Configuration
+
+This repository is configured to test **only the custom lint plugin** with all standard Flutter lints disabled. This allows for isolated testing of the plugin rules. The `analysis_options.yaml` is set up with:
+
+- ✅ Custom plugin enabled
+- ✅ Warning rules enabled by default (`avoid_print`, `empty_container`)
+- ✅ Lint rules configurable in `diagnostics` section (`todo_comment`)
+- ❌ All standard `package:flutter_lints` rules disabled for focused testing
 
 ## 📦 Project Structure
 
