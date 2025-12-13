@@ -37,7 +37,7 @@ This repository is configured to test **only the custom lint plugin** with all s
 │   └── ...
 ├── test/                         # Test cases
 ├── packages/
-│   └── custom_lint_plugin/       # Custom analyzer plugin
+│   └── example_analyzer_plugin/       # Custom analyzer plugin
 └── analysis_options.yaml         # Analyzer configuration
 ```
 

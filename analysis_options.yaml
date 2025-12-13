@@ -11,8 +11,8 @@ include: package:flutter_lints/flutter.yaml
 
 # Custom analyzer plugins
 plugins:
-  custom_lint_plugin:
-    path: packages/custom_lint_plugin
+  example_analyzer_plugin:
+    path: packages/example_analyzer_plugin
     diagnostics:
       # Enable lint rules explicitly (warning rules are enabled by default)
       todo_comment: true

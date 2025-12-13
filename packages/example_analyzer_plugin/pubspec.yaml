@@ -1,4 +1,4 @@
-name: custom_lint_plugin
+name: example_analyzer_plugin
 description:
   Custom analyzer plugin with lint rules for Dart and Flutter projects
 version: 1.0.0
