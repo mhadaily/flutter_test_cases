@@ -51,3 +51,14 @@ dcm:
         name-pattern: State$
         ignore-subclasses: true
     #--------BLoC-------------
+
+    #--------Provider-------------
+    - avoid-instantiating-in-value-provider
+    - dispose-providers
+    - avoid-read-inside-build
+    - avoid-watch-outside-build
+    - prefer-immutable-selector-value
+    - prefer-nullable-provider-types
+    - prefer-multi-provider
+    - prefer-provider-extensions
+    #--------Provider-------------

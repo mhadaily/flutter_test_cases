@@ -68,6 +68,19 @@ AI-assisted fix suggestions. The folder contains numbered files in article order
 DCM MCP server docs (useful for IDE/AI integrations):
 https://dcm.dev/docs/ide-integrations/mcp-server/
 
+## Provider DCM Lints Examples
+
+Provider lint examples adapted from "Flutter Provider Best Practices You're
+Probably Missing (Road to Flutter Production-Ready State Management)" on
+dcm.dev/blog. The examples live under:
+
+- lib/lint_examples/provider_dcm_lints/
+
+Each file demonstrates one Provider-focused DCM lint with "Bad" and "Good"
+examples in article order (01–08). Use them to reproduce issues, validate lint
+behavior, or drive AI-assisted fix suggestions. The same DCM MCP server docs
+apply for IDE/AI integrations: https://dcm.dev/docs/ide-integrations/mcp-server/
+
 ## 🤝 Contribution
 
 We welcome contributions! To contribute:
