@@ -1,14 +1,22 @@
 # Flutter Test Cases - The Hard Parts
 
-A comprehensive collection of advanced test cases and tools for Flutter development.
+A comprehensive collection of advanced test cases and tools for Flutter
+development.
 
 ## 📝 Testing The Hard Parts For Flutter Developers
 
-Complex test cases for Flutter covering challenging scenarios, which I have covered in [this article](https://dcm.dev/blog/2025/07/30/navigating-hard-parts-testing-flutter-developers/) 🔥
+Complex test cases for Flutter covering challenging scenarios, which I have
+covered in
+[this article](https://dcm.dev/blog/2025/07/30/navigating-hard-parts-testing-flutter-developers/)
+🔥
 
 ## 🔍 Custom Lint Plugin Based on Dart 3.10+ and New Analyzer API
 
-In addition to comprehensive test cases, this repository includes a **custom analyzer plugin** demonstrating the new Dart 3.10+ analyzer plugin API. The plugin implements multiple lint rules for Flutter and Dart projects, covered in [this article about creating custom lint rules](https://dcm.dev/blog/custom-lint-plugin/) (placeholder for article).
+In addition to comprehensive test cases, this repository includes a **custom
+analyzer plugin** demonstrating the new Dart 3.10+ analyzer plugin API. The
+plugin implements multiple lint rules for Flutter and Dart projects, covered in
+[this article about creating custom lint rules](https://dcm.dev/blog/custom-lint-plugin/)
+(placeholder for article).
 
 ### Features
 
@@ -18,11 +26,14 @@ In addition to comprehensive test cases, this repository includes a **custom ana
   - `todo_comment` - Reports TODO comments in code
 - **Quick Fixes**: Automatic code fixes for applicable rules
 - **Example Files**: Practical demonstrations of each rule in action
-- **Best Practices**: Follows Dart package structure and modern plugin architecture
+- **Best Practices**: Follows Dart package structure and modern plugin
+  architecture
 
 ### Testing Configuration
 
-This repository is configured to test **only the custom lint plugin** with all standard Flutter lints disabled. This allows for isolated testing of the plugin rules. The `analysis_options.yaml` is set up with:
+This repository is configured to test **only the custom lint plugin** with all
+standard Flutter lints disabled. This allows for isolated testing of the plugin
+rules. The `analysis_options.yaml` is set up with:
 
 - ✅ Custom plugin enabled
 - ✅ Warning rules enabled by default (`avoid_print`, `empty_container`)
@@ -40,6 +51,22 @@ This repository is configured to test **only the custom lint plugin** with all s
 │   └── example_analyzer_plugin/       # Custom analyzer plugin
 └── analysis_options.yaml         # Analyzer configuration
 ```
+
+## BLoC DCM Lints Examples
+
+This repository includes a dedicated set of BLoC lint examples adapted from the
+article "BLoC Best Practices You're Probably Missing (Road to Flutter
+Production-Ready State Management)" on dcm.dev/blog. The examples live under:
+
+- lib/lint_examples/bloc_dcm_lints/
+
+Each file demonstrates a single DCM lint with both "Bad" and "Good" examples.
+Use these examples to reproduce problems, validate lint rules, or drive
+AI-assisted fix suggestions. The folder contains numbered files in article order
+(01–13).
+
+DCM MCP server docs (useful for IDE/AI integrations):
+https://dcm.dev/docs/ide-integrations/mcp-server/
 
 ## 🤝 Contribution
 
