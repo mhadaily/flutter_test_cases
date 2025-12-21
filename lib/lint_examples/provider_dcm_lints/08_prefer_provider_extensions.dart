@@ -3,49 +3,67 @@ import 'package:provider/provider.dart';
 
 /// --- prefer-provider-extensions ---
 
-class Counter extends ChangeNotifier {
-  int value = 0;
-  void increment() {
-    value++;
-    notifyListeners();
-  }
+class UserModel extends ChangeNotifier {
+  final String _name = 'User';
+  String get name => _name;
 }
 
-class ReadBad extends StatelessWidget {
-  const ReadBad({super.key});
+// BAD: Verbose and easy to forget listen parameter
+class ProviderOfBad extends StatelessWidget {
+  const ProviderOfBad({super.key});
+
+  void _handleTap(BuildContext context) {
+    // Easy to forget listen: false when you need read
+    final model = Provider.of<UserModel>(context, listen: false);
+    // Use model for something
+    debugPrint(model.name);
+  }
 
   @override
   Widget build(BuildContext context) {
-    // BAD: using Provider.of with listen: false instead of read extension
-    final counter = Provider.of<Counter>(context, listen: false);
-    return ElevatedButton(
-      onPressed: counter.increment,
-      child: const Text('Increment'),
+    // Have to remember listen: true is default (watch behavior)
+    final model = Provider.of<UserModel>(context);
+
+    return Column(
+      children: [
+        Text(model.name),
+        ElevatedButton(
+          onPressed: () => _handleTap(context),
+          child: const Text('Tap'),
+        ),
+      ],
     );
   }
 }
 
-class ReadGood extends StatelessWidget {
-  const ReadGood({super.key});
+// GOOD: Clear intent, shorter code
+class ExtensionMethodsGood extends StatelessWidget {
+  const ExtensionMethodsGood({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    // GOOD: context.read extension is clearer
-    return ElevatedButton(
-      onPressed: () => context.read<Counter?>()?.increment(),
-      child: const Text('Increment'),
-    );
+  void _handleTap(BuildContext context) {
+    // Read once (doesn't rebuild on changes)
+    final model = context.read<UserModel?>();
+    debugPrint(model?.name ?? 'No Model');
   }
-}
-
-class WatchGood extends StatelessWidget {
-  const WatchGood({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // GOOD: context.watch extension subscribes to changes
-    final value = context.watch<Counter?>()?.value ?? 0;
-    return Text('Value: $value');
+    // Watch (rebuilds when value changes)
+    final model = context.watch<UserModel?>();
+
+    // Select a specific part
+    final name = context.select<UserModel?, String?>((UserModel? m) => m?.name);
+
+    return Column(
+      children: [
+        Text(model?.name ?? 'No Model'),
+        Text(name ?? 'Unknown'),
+        ElevatedButton(
+          onPressed: () => _handleTap(context),
+          child: const Text('Tap'),
+        ),
+      ],
+    );
   }
 }
 
@@ -55,8 +73,8 @@ class ProviderExtensionsApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => Counter(),
-      child: const Column(children: [ReadBad(), ReadGood(), WatchGood()]),
+      create: (_) => UserModel(),
+      child: const Column(children: [ProviderOfBad(), ExtensionMethodsGood()]),
     );
   }
 }

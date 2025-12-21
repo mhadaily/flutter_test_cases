@@ -11,31 +11,29 @@ class Counter extends ChangeNotifier {
   }
 }
 
-// BAD EXAMPLE: read inside build -> no rebuilds on change
-class CounterDisplayBad extends StatelessWidget {
-  const CounterDisplayBad({super.key});
+// BAD: Widget won't update when counter changes!
+class CounterDisplay extends StatelessWidget {
+  const CounterDisplay({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final counter = context.read<Counter?>(); // watch: subscribes
-    if (counter == null) {
-      return const SizedBox.shrink();
-    }
-    return Text('Count: ${counter.value}');
+    // 💥 Using read inside build — no subscription!
+    final counter = context.read<Counter?>();
+
+    return Text('Count: ${counter?.value ?? 0}');
   }
 }
 
-// GOOD EXAMPLE: watch inside build -> subscribes to changes
+// GOOD: Widget updates when counter changes
 class CounterDisplayGood extends StatelessWidget {
   const CounterDisplayGood({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final counter = context.watch<Counter?>(); // watch: subscribes
-    if (counter == null) {
-      return const SizedBox.shrink();
-    }
-    return Text('Count: ${counter.value}');
+    // ✅ Using watch inside build — subscribed to changes!
+    final counter = context.watch<Counter?>();
+
+    return Text('Count: ${counter?.value ?? 0}');
   }
 }
 
@@ -46,9 +44,7 @@ class CounterProviderApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (_) => Counter(),
-      child: const Column(
-        children: [CounterDisplayBad(), CounterDisplayGood()],
-      ),
+      child: const Column(children: [CounterDisplay(), CounterDisplayGood()]),
     );
   }
 }

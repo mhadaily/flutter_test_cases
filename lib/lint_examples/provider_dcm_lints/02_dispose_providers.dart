@@ -2,38 +2,50 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 /// --- dispose-providers ---
+class Database {
+  void open() {}
+  void close() {}
+}
 
-// BAD EXAMPLE
-class BadDatabaseScope extends StatelessWidget {
-  const BadDatabaseScope({super.key});
+class DatabaseService {
+  final Database _db;
+
+  DatabaseService() : _db = Database() {
+    _db.open();
+  }
+
+  void dispose() {
+    _db.close(); // This cleanup never happens without dispose callback!
+  }
+}
+
+// BAD: dispose() is never called
+class MyAppBad extends StatelessWidget {
+  const MyAppBad({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Provider<DatabaseService>(
-      // 💥 No dispose callback, connection stays open
+    return Provider(
       create: (_) => DatabaseService(),
+      // 💥 No dispose callback! Database connection leaked!
       child: const DatabaseConsumer(),
     );
   }
 }
 
-// GOOD EXAMPLE
-class GoodDatabaseScope extends StatelessWidget {
-  const GoodDatabaseScope({super.key});
+// GOOD: dispose() is called on unmount
+class MyAppGood extends StatelessWidget {
+  const MyAppGood({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Provider<DatabaseService>(
+    return Provider(
       create: (_) => DatabaseService(),
-      dispose: (_, service) => service.dispose(),
+      dispose: (_, service) => service.dispose(), // ✅ Cleanup happens
       child: const DatabaseConsumer(),
     );
   }
 }
-
-// ---------------------------------------------------------------------------
-// Supporting types
-// ---------------------------------------------------------------------------
 
 class DatabaseConsumer extends StatelessWidget {
   const DatabaseConsumer({super.key});
@@ -41,17 +53,6 @@ class DatabaseConsumer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final db = context.watch<DatabaseService?>();
-    return Text((db?.isOpen ?? false) ? 'Connected' : 'Closed');
-  }
-}
-
-class DatabaseService {
-  bool _open = true;
-  bool get isOpen => _open;
-
-  void query(String _) {}
-
-  void dispose() {
-    _open = false;
+    return Text(db != null ? 'Database Service Created' : 'No Service');
   }
 }

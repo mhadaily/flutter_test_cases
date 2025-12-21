@@ -3,62 +3,60 @@ import 'package:provider/provider.dart';
 
 /// --- avoid-watch-outside-build ---
 
-class ThemeController extends ChangeNotifier {
-  bool _isDark = false;
-  bool get isDark => _isDark;
-
-  void toggle() {
-    _isDark = !_isDark;
+class Counter extends ChangeNotifier {
+  int value = 0;
+  void increment() {
+    value++;
     notifyListeners();
   }
 }
 
-class ToggleButtonBad extends StatefulWidget {
-  const ToggleButtonBad({super.key});
+// BAD: Subscribing where it doesn't make sense
+class MyHomePage extends StatelessWidget {
+  const MyHomePage({super.key});
 
-  @override
-  State<ToggleButtonBad> createState() => _ToggleButtonBadState();
-}
-
-class _ToggleButtonBadState extends State<ToggleButtonBad> {
-  // BAD: watch used in initState (outside build)
-  @override
-  void initState() {
-    super.initState();
-    context.watch<ThemeController>(); // lint: watch only inside build
+  void _handleTap(BuildContext context) {
+    // 💥 Using watch outside build — wasteful and potentially buggy!
+    final counter = context.watch<Counter?>();
+    counter?.increment();
   }
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      onPressed: () => context.read<ThemeController?>()?.toggle(),
-      child: const Text('Toggle'),
+      onPressed: () => _handleTap(context),
+      child: const Text('Increment'),
     );
   }
 }
 
-class ToggleButtonGood extends StatelessWidget {
-  const ToggleButtonGood({super.key});
+// GOOD: Read for event handlers
+class MyHomePageGood extends StatelessWidget {
+  const MyHomePageGood({super.key});
+
+  void _handleTap(BuildContext context) {
+    // ✅ Using read in callback — no unnecessary subscription
+    final counter = context.read<Counter?>();
+    counter?.increment();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final controller = context.watch<ThemeController?>();
-    final isDark = controller?.isDark ?? false; // OK: inside build
     return ElevatedButton(
-      onPressed: () => context.read<ThemeController?>()?.toggle(),
-      child: Text(isDark ? 'Dark' : 'Light'),
+      onPressed: () => _handleTap(context),
+      child: const Text('Increment'),
     );
   }
 }
 
-class ThemeProviderApp extends StatelessWidget {
-  const ThemeProviderApp({super.key});
+class CounterProviderApp extends StatelessWidget {
+  const CounterProviderApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => ThemeController(),
-      child: const Column(children: [ToggleButtonBad(), ToggleButtonGood()]),
+      create: (_) => Counter(),
+      child: const Column(children: [MyHomePage(), MyHomePageGood()]),
     );
   }
 }

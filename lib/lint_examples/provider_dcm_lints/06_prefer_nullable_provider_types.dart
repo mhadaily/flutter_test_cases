@@ -8,27 +8,32 @@ class UserModel extends ChangeNotifier {
   final String name;
 }
 
-final sharedUser = UserModel('Alice'); // existing instance for value provider
-
-class ReusableWidgetBad extends StatelessWidget {
-  const ReusableWidgetBad({super.key});
+// BAD: Crashes if provider is missing
+class ReusableWidget extends StatelessWidget {
+  const ReusableWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // BAD: crashes if UserModel is not provided above
+    // 💥 Throws ProviderNotFoundException if used outside provider scope!
     final model = context.watch<UserModel>();
+
     return Text(model.name);
   }
 }
 
+// GOOD: Handles missing provider gracefully
 class ReusableWidgetGood extends StatelessWidget {
   const ReusableWidgetGood({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // GOOD: handles missing provider safely
+    // ✅ Returns null if provider is missing
     final model = context.watch<UserModel?>();
-    if (model == null) return const Text('No user');
+
+    if (model == null) {
+      return const Text('No user');
+    }
+
     return Text(model.name);
   }
 }
@@ -40,14 +45,14 @@ class NullableProviderApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        // BAD: non-nullable provider; using widget elsewhere will throw
-        Provider<UserModel>.value(
-          value: sharedUser,
-          child: const ReusableWidgetBad(),
+        // Demonstrate the bad pattern - using non-nullable in provider scope
+        Provider<UserModel>(
+          create: (_) => UserModel('Alice'),
+          child: const ReusableWidget(),
         ),
-        // GOOD: nullable provider; widget handles missing provider
-        Provider<UserModel?>.value(
-          value: null,
+        // Demonstrate the good pattern - nullable provider
+        Provider<UserModel?>(
+          create: (_) => null,
           child: const ReusableWidgetGood(),
         ),
       ],

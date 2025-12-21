@@ -3,38 +3,59 @@ import 'package:provider/provider.dart';
 
 /// --- prefer-multi-provider ---
 
-class Cart extends ChangeNotifier {}
+class AuthService {}
 
-class Catalog extends ChangeNotifier {}
+class ApiClient {}
 
-class SingleProvidersBad extends StatelessWidget {
-  const SingleProvidersBad({super.key});
+class UserModel extends ChangeNotifier {}
+
+class SettingsModel extends ChangeNotifier {}
+
+// BAD: Nesting hell
+class NestedProvidersBad extends StatelessWidget {
+  const NestedProvidersBad({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // BAD: multiple nested providers instead of MultiProvider
-    return ChangeNotifierProvider(
-      create: (_) => Cart(),
-      child: ChangeNotifierProvider(
-        create: (_) => Catalog(),
-        child: const Text('Store'),
+    return Provider<AuthService>(
+      create: (_) => AuthService(),
+      child: Provider<ApiClient>(
+        create: (_) => ApiClient(),
+        child: ChangeNotifierProvider<UserModel>(
+          create: (_) => UserModel(),
+          child: ChangeNotifierProvider<SettingsModel>(
+            create: (_) => SettingsModel(),
+            child: const MyApp(), // 4 levels deep!
+          ),
+        ),
       ),
     );
   }
 }
 
+// GOOD: Flat and readable
 class MultiProviderGood extends StatelessWidget {
   const MultiProviderGood({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // GOOD: MultiProvider groups providers neatly
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => Cart()),
-        ChangeNotifierProvider(create: (_) => Catalog()),
+        Provider<AuthService>(create: (_) => AuthService()),
+        Provider<ApiClient>(create: (_) => ApiClient()),
+        ChangeNotifierProvider<UserModel>(create: (_) => UserModel()),
+        ChangeNotifierProvider<SettingsModel>(create: (_) => SettingsModel()),
       ],
-      child: const Text('Store'),
+      child: const MyApp(),
     );
+  }
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const SizedBox.shrink();
   }
 }

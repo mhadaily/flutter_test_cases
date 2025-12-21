@@ -3,97 +3,82 @@ import 'package:provider/provider.dart';
 
 /// --- avoid-instantiating-in-value-provider ---
 
-// BAD EXAMPLE
-class BadValueConstructorApp extends StatelessWidget {
-  const BadValueConstructorApp({super.key});
+class MyChangeNotifier extends ChangeNotifier {}
+
+// BAD: Memory leak, nobody disposes this!
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider.value(
-      // 💥 New instance each rebuild, never disposed
-      value: Counter(),
-      child: const CounterScreen(),
+    return Provider.value(
+      // 💥 MEMORY LEAK: This ChangeNotifier will never be disposed!
+      value: MyChangeNotifier(),
+      child: const HomePage(),
     );
   }
 }
 
-// GOOD EXAMPLE: Provider owns lifecycle when using create:
-class GoodCreateConstructorApp extends StatelessWidget {
-  const GoodCreateConstructorApp({super.key});
+// GOOD: Provider manages the lifecycle
+class MyAppGood extends StatelessWidget {
+  const MyAppGood({super.key});
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => Counter(),
-      child: const CounterScreen(),
+      // ✅ Provider creates it, Provider disposes it
+      create: (_) => MyChangeNotifier(),
+      child: const HomePage(),
     );
   }
 }
 
-// GOOD EXAMPLE: Using .value with a managed instance you dispose yourself
-class GoodManagedValueApp extends StatefulWidget {
-  const GoodManagedValueApp({super.key});
+// GOOD: You manage the lifecycle
+class ParentWidget extends StatefulWidget {
+  const ParentWidget({super.key});
 
   @override
-  State<GoodManagedValueApp> createState() => _GoodManagedValueAppState();
+  State<ParentWidget> createState() => _ParentWidgetState();
 }
 
-class _GoodManagedValueAppState extends State<GoodManagedValueApp> {
-  late final Counter _counter;
+class _ParentWidgetState extends State<ParentWidget> {
+  late final MyChangeNotifier _notifier;
 
   @override
   void initState() {
     super.initState();
-    _counter = Counter();
+    _notifier = MyChangeNotifier();
   }
 
   @override
   void dispose() {
-    _counter.dispose();
+    _notifier.dispose(); // ✅ You manage the lifecycle
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider.value(
-      value: _counter,
-      child: const CounterScreen(),
+      value: _notifier, // ✅ Existing instance
+      child: const ChildWidget(),
     );
   }
 }
 
-// ---------------------------------------------------------------------------
-// Supporting types
-// ---------------------------------------------------------------------------
-
-class Counter extends ChangeNotifier {
-  int value = 0;
-
-  void increment() {
-    value++;
-    notifyListeners();
-  }
-}
-
-class CounterScreen extends StatelessWidget {
-  const CounterScreen({super.key});
+class HomePage extends StatelessWidget {
+  const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final counter = context.watch<Counter?>();
+    return const SizedBox.shrink();
+  }
+}
 
-    if (counter == null) {
-      return const SizedBox();
-    }
+class ChildWidget extends StatelessWidget {
+  const ChildWidget({super.key});
 
-    return Column(
-      children: [
-        Text('Count: ${counter.value}'),
-        ElevatedButton(
-          onPressed: counter.increment,
-          child: const Text('Increment'),
-        ),
-      ],
-    );
+  @override
+  Widget build(BuildContext context) {
+    return const SizedBox.shrink();
   }
 }
